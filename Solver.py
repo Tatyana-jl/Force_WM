@@ -5,25 +5,7 @@ from RNN_neurons import RnnForNeurons
 from learning_rule import RLS
 
 
-# class RunModFORCE:
-#
-#     # class RunMode performs the 'experiment'. It creates the network with assigned parameters:
-#
-#     # num_neurons: number of neurons in the 'pool'
-#     # output_size: number of the output channels
-#     # num_inputs: number of the input channels
-#     # tau: relexation constant for neurons
-#     # g: synaptic scaling
-#
-#     def __init__(self, num_neurons, output_size, num_inputs, tau, g):
-#         self.num_neurons = num_neurons
-#         self.tau = tau
-#         self.g = g
-#         self.output_size = output_size
-#         self.net = RnnForNeurons(num_neurons=self.num_neurons, output_size=self.output_size, tau=self.tau, g=self.g)
-#
-#         # # input weights - created once for the network and stay fixed
-#         # self.weightInput = torch.distributions.normal.Normal(0, 1).sample((self.num_neurons, num_inputs))
+
 
 def run(network, input_net, return_measures=False, train=False, delta_t=2, alpha=1, lengthSignal=1000, target=None,
         check_error_update=False):
@@ -74,7 +56,7 @@ def run(network, input_net, return_measures=False, train=False, delta_t=2, alpha
         for t in range(length_input):
             if t % lengthSignal == 0:
                 # initialize potentials with uniform noise in the [-0.1,0.1] at each trial (according to the paper)
-                potentials = Variable(torch.distributions.normal.Normal(0, 0.5).sample((network.num_neurons, 1)).cuda())
+                potentials = Variable(torch.distributions.normal.Normal(0, 0.1).sample((network.num_neurons, 1)).cuda())
 
             output[t], potentials = network(input_net[:, t], potentials)
             r_post = torch.tanh(potentials)
@@ -85,7 +67,7 @@ def run(network, input_net, return_measures=False, train=False, delta_t=2, alpha
             # update the weights on each delta_t
             if train & (t % delta_t == 0):
                 loss_trial = output[t] - target[t]
-                loss = np.append(loss, loss_trial)
+                loss = np.append(loss, loss_trial.cpu().detach())
                 # Calculate update
                 p_w, dW = RLS(loss_trial, p_w, r_post)
                 # Update parameters

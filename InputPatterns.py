@@ -63,8 +63,8 @@ def match_to_sample_input(num_trials, lengthStimulus, delay, lengthSignal, patte
         exp_speed (optional, int): defines the steepness of the target function. Default 40.
 
     Output:
-        signal(torch tensor, (2,num_trials*lengthSignal)): input signal with num_trials trials
-        target(torch tensor, (1,num_trials*lengthSignal)): target signal for the num_trials trials
+        signal(numpy array, (2,num_trials*lengthSignal)): input signal with num_trials trials
+        target(numpy array, (1,num_trials*lengthSignal)): target signal for the num_trials trials
         trial_target (list, (1, num_trials)): labels for trials' output 0 or 1.
     """
     signal_u1 = np.array([])
@@ -94,8 +94,8 @@ def repeat_sequence_input(num_trials):
         num_trials(required, int) - number of trials
 
     Outputs:
-        signal(torch tensor, (4, 2800 * num_trials)) - input signal (for 4 inputs)
-        target(torch tensor, (4, 2800 * num_trials)) - target signal (for 4 outputs)
+        signal(numpy array, (4, 2800 * num_trials)) - input signal (for 4 inputs)
+        target(numpy array, (4, 2800 * num_trials)) - target signal (for 4 outputs)
     """
 
     half = [np.sin(2 * np.pi * t / 200) for t in range(100)]
@@ -122,4 +122,4 @@ def repeat_sequence_input(num_trials):
         signal[:, tr * 2800:(tr + 1) * 2800] = signal_tr
         target[:, tr * 2800:(tr + 1) * 2800] = target_tr
 
-        return torch.Tensor(signal), torch.Tensor(target)
+        return np.array(signal), np.array(target)

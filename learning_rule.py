@@ -18,7 +18,7 @@ def RLS(loss_step, P, r):
     """
     k = torch.matmul(P, r)
     rPr = torch.matmul(r.view(1, -1), k)
-    c = (1.0 / (1.0 + rPr)).cuda()
+    c = 1.0 / (1.0 + rPr)
     P = P - torch.matmul(k, (k.view(1, -1) * c))
     dweight = -loss_step * k * c
     return P, dweight
