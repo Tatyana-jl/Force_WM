@@ -24,15 +24,15 @@ class RnnForNeurons(nn.Module):
         self.g = g
         self.p = p
 
-        # Neurons and LinearModified - are custom layers (see the next section)
-        self.input_map = LinearModified(num_neurons=self.input_size, output_size=self.num_neurons)
+        # Neurons and LinearModified - are custom layers
+        self.input_map = LinearModified(input_size=self.input_size, output_size=self.num_neurons)
         self.gen_layer = Neurons(num_neurons=self.num_neurons, tau=self.tau, g=self.g)
-        self.read_out = LinearModified(num_neurons=self.num_neurons, output_size=self.output_size)
+        self.read_out = LinearModified(input_size=self.num_neurons, output_size=self.output_size)
 
         # Initialization
         # input weights - created once for the network and stay fixed
         torch.nn.init.normal_(self.input_map.weight, 0, 0.1)
-        # self.input_map.weight.requires_grad = False
+        self.input_map.weight.requires_grad = False
 
         # self.input_map.weight = torch.distributions.normal.Normal(0, 1).sample((self.num_neurons, self.input_size))
 
